@@ -12,6 +12,7 @@ export interface LoggerInput {
   author: string;
   content: string;
 }
+
 export const log = () => {
   logger.info();
 };

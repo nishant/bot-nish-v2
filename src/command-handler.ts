@@ -2,9 +2,8 @@ import { Message } from 'discord.js';
 import { Command } from './commands/command';
 import { GreetCommand } from './commands/greet';
 import { HelpCommand } from './commands/help';
-import { logger } from './logger';
-import { CommandContext } from './models/command-context';
 import { SecretSanta } from './commands/secret-santa';
+import { logger } from './logger';
 import { CommandContext } from './models/command-context';
 import { reactor } from './reactions/reactor';
 

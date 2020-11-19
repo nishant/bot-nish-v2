@@ -1,4 +1,5 @@
-import { CommandContext } from '../models/command_context';
+import { logger } from '../logger';
+import { CommandContext } from '../models/command-context';
 import { Command } from './command';
 
 export class SecretSanta implements Command {

@@ -1,4 +1,4 @@
-import { CommandContext } from '../models/command_context';
+import { CommandContext } from '../models/command-context';
 import { Command } from './command';
 
 export class HelpCommand implements Command {
@@ -33,7 +33,7 @@ export class HelpCommand implements Command {
     );
     if (!matchedCommand) {
       await commandContext.originalMessage.reply(
-        "I don't know about that command :(. Try !help to find all commands you can use.",
+        "I don't know about that command :(. Try %help to find all commands you can use.",
       );
       throw Error('Unrecognized command');
     }

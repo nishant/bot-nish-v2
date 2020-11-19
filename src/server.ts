@@ -1,11 +1,11 @@
 import Discord, { Message } from 'discord.js';
-import { CommandHandler } from './command_handler';
+import { CommandHandler } from './command-handler';
 import { BotConfig, config } from './config/config';
+import { logger } from './logger';
 
 /** Pre-startup validation of the bot config. */
-const validateConfig = (botConf: BotConfig) => {
-  if (!botConf.token)
-    throw new Error('You need to specify your Discord bot token!');
+const validateConfig = (botConfig: BotConfig) => {
+  if (!botConfig.token) throw new Error('no discord bot token provided!');
 };
 
 validateConfig(config);
@@ -14,7 +14,7 @@ const client = new Discord.Client();
 const commandHandler = new CommandHandler(config.prefix);
 
 client.on('ready', () => {
-  console.log('Bot has started');
+  logger.info('bot started!');
 });
 
 client.on('message', (message: Message) => {
@@ -22,7 +22,7 @@ client.on('message', (message: Message) => {
 });
 
 client.on('error', (e) => {
-  console.error('Discord client error!', e);
+  logger.error('discord client error!', e);
 });
 
 client.login(config.token);

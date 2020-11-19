@@ -3,6 +3,7 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from './types';
 import { MessageResponder } from './services/message-responder';
 import exp = require('constants');
+import {logger} from "../../src/logger";
 
 @injectable()
 export class Bot {
@@ -19,7 +20,7 @@ export class Bot {
 
     public listen(): Promise<string> {
       this.client.on('message', (message: Message) => {
-        console.log('[INFO] Message Received.\n\tMessage Content:\n\t\t ', message.content);
+        logger.info('Message Received.\n\tMessage Content:\n\t\t ', message.content);
       });
 
       return this.client.login(this.token);

@@ -1,4 +1,4 @@
-import { CommandContext } from '../models/command_context';
+import { CommandContext } from '../models/command-context';
 
 export interface Command {
   /**

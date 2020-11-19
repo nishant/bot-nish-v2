@@ -4,6 +4,8 @@ import { GreetCommand } from './commands/greet';
 import { HelpCommand } from './commands/help';
 import { logger } from './logger';
 import { CommandContext } from './models/command-context';
+import { SecretSanta } from './commands/secret-santa';
+import { CommandContext } from './models/command-context';
 import { reactor } from './reactions/reactor';
 
 /** Handler for bot commands issued by users. */
@@ -16,6 +18,7 @@ export class CommandHandler {
     const commandClasses: Array<any> = [
       // TODO: Add more commands here.
       GreetCommand,
+      SecretSanta,
     ];
 
     this.commands = commandClasses.map((CommandClass) => new CommandClass());

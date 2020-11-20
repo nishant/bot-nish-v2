@@ -1,5 +1,7 @@
 import { Message } from 'discord.js';
+import { CoinFlip } from '../commands/coin-flip';
 import { Command } from '../commands/command';
+import { DiceRoll } from '../commands/dice-roll';
 import { GreetCommand } from '../commands/greet';
 import { HelpCommand } from '../commands/help';
 import { SecretSanta } from '../commands/secret-santa';
@@ -18,6 +20,8 @@ export class CommandHandler {
       // TODO: Add more commands here.
       GreetCommand,
       SecretSanta,
+      CoinFlip,
+      DiceRoll,
     ];
 
     this.commands = commandClasses.map((CommandClass) => new CommandClass());

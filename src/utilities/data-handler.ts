@@ -52,13 +52,13 @@ export class DataHandler {
   ): Promise<void> {
     const user = this.users.get(userId)!;
     if (user !== undefined) {
-      // await user.send(`Your secret santa assignment is ${messageContent}`);
-      logger.info(
-        'MOCK MSG!!',
-        userId,
-        this.getUsernameById(userId),
-        messageContent,
-      );
+      await user.send(`Your secret santa assignment is ${messageContent}`);
+      // logger.info(
+      //   'MOCK MSG!!',
+      //   userId,
+      //   this.getUsernameById(userId),
+      //   messageContent,
+      // );
     }
   }
 

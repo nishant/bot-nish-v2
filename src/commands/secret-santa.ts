@@ -1,6 +1,6 @@
 import { CommandContext } from '../models/command-context';
 import { DataHandler } from '../utilities/data-handler';
-import { logger } from '../utilities/logger';
+import { Helpers } from '../utilities/helpers';
 import { Command } from './command';
 
 export class SecretSanta implements Command {
@@ -21,7 +21,11 @@ export class SecretSanta implements Command {
     await parsedUserCommand.originalMessage.channel.send(message);
 
     pairs.forEach(async (value, key) => {
-      logger.info(key, DataHandler.getUsernameById(value));
+      // logger.info(key, DataHandler.getUsernameById(value));
+      // await DataHandler.sendMessageToUser(
+      //   key,
+      //   await DataHandler.getUsernameById(value),
+      // );
       await DataHandler.sendMessageToUser(
         key,
         await DataHandler.getUsernameById(value),
@@ -30,7 +34,7 @@ export class SecretSanta implements Command {
   }
 
   hasPermissionToRun(parsedUserCommand: CommandContext): boolean {
-    return true;
+    return parsedUserCommand.originalMessage.author.username === 'nish';
   }
 
   private async createPairs(): Promise<Map<string, string>> {
@@ -44,30 +48,12 @@ export class SecretSanta implements Command {
     };
 
     while (hasSelfPairs()) {
-      const shuffled = SecretSanta.shuffle(members);
+      const shuffled = Helpers.shuffle(members);
       pairs = new Map<string, string>();
       // eslint-disable-next-line no-loop-func
       members.forEach((member, i: number) => pairs.set(member, shuffled[i]));
     }
     return pairs;
-  }
-
-  private static shuffle<T>(array: Array<T>): Array<T> {
-    const copy = [...array];
-    let currentIndex = copy.length;
-    let temporaryValue;
-    let randomIndex;
-
-    while (currentIndex !== 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      temporaryValue = copy[currentIndex];
-      copy[currentIndex] = copy[randomIndex];
-      copy[randomIndex] = temporaryValue;
-    }
-
-    return copy;
   }
 
   private static printMap(map: Map<string, string>): string {

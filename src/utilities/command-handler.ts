@@ -1,11 +1,11 @@
 import { Message } from 'discord.js';
-import { Command } from './commands/command';
-import { GreetCommand } from './commands/greet';
-import { HelpCommand } from './commands/help';
-import { SecretSanta } from './commands/secret-santa';
+import { Command } from '../commands/command';
+import { GreetCommand } from '../commands/greet';
+import { HelpCommand } from '../commands/help';
+import { SecretSanta } from '../commands/secret-santa';
+import { CommandContext } from '../models/command-context';
 import { logger } from './logger';
-import { CommandContext } from './models/command-context';
-import { reactor } from './reactions/reactor';
+import { reactor } from './reactor';
 
 /** Handler for bot commands issued by users. */
 export class CommandHandler {

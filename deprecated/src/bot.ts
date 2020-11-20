@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from './types';
 import { MessageResponder } from './services/message-responder';
 import exp = require('constants');
-import {logger} from "../../src/logger";
+import {logger} from "../../src/utilities/logger";
 
 @injectable()
 export class Bot {

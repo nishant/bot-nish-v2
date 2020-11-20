@@ -1,7 +1,7 @@
 import Discord, { Message } from 'discord.js';
-import { CommandHandler } from './command-handler';
 import { BotConfig, config } from './config/config';
-import { logger } from './logger';
+import { CommandHandler } from './utilities/command-handler';
+import { logger } from './utilities/logger';
 
 /** Pre-startup validation of the bot config. */
 const validateConfig = (botConfig: BotConfig) => {
@@ -10,7 +10,7 @@ const validateConfig = (botConfig: BotConfig) => {
 
 validateConfig(config);
 
-const client = new Discord.Client();
+export const client = new Discord.Client();
 const commandHandler = new CommandHandler(config.prefix);
 
 client.on('ready', () => {

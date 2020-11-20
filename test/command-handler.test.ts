@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { mock } from 'ts-mockito';
-import { CommandHandler } from '../src/command-handler';
+import { CommandHandler } from '../src/utilities/command-handler';
 
 const buildMessage = (content: string): Message => {
   const message = mock(Message);

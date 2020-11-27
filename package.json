@@ -23,6 +23,7 @@
   "dependencies": {
     "axios": "^0.21.0",
     "discord.js": "12.3.x",
+    "dotenv": "^8.2.0",
     "tslog": "^2.11.1"
   },
   "devDependencies": {

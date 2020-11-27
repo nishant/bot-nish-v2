@@ -1,4 +1,4 @@
-import { SANTA_ROLE_ID } from '../config/config';
+import { SANTA_ROLE_ID } from '../config';
 import { CommandContext } from '../models/command-context';
 import { DataHandler } from '../utilities/data-handler';
 import { Helpers } from '../utilities/helpers';

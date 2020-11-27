@@ -52,13 +52,13 @@ export class DataHandler {
   ): Promise<void> {
     const user = this.users.get(userId)!;
     if (user !== undefined) {
-      await user.send(`Your secret santa assignment is ${messageContent}`);
-      // logger.info(
-      //   'MOCK MSG!!',
-      //   userId,
-      //   this.getUsernameById(userId),
-      //   messageContent,
-      // );
+      // await user.send(`Your secret santa assignment is ${messageContent}`);
+      logger.info(
+        'MOCK MSG!!',
+        userId,
+        this.getUsernameById(userId),
+        messageContent,
+      );
     }
   }
 
@@ -66,5 +66,12 @@ export class DataHandler {
     const user = this.users.get(userId)!;
     if (user !== undefined) return user.displayName;
     return 'USER NOT FOUND!!';
+  }
+
+  public static async userHasRole(
+    member: GuildMember,
+    roleName: string,
+  ): Promise<boolean> {
+    return !!member?.roles.cache.find((role) => role.name === roleName);
   }
 }

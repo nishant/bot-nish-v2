@@ -1,3 +1,4 @@
+import { SANTA_ROLE_ID } from '../config/config';
 import { CommandContext } from '../models/command-context';
 import { DataHandler } from '../utilities/data-handler';
 import { Helpers } from '../utilities/helpers';
@@ -6,7 +7,7 @@ import { Command } from './command';
 export class SecretSanta implements Command {
   commandNames = ['santa', 'secretsanta'];
 
-  private static readonly ROLE_ID = '778849334182936596';
+  private static readonly ROLE_ID = SANTA_ROLE_ID;
 
   getHelpMessage(commandPrefix: string): string {
     return `Use ${commandPrefix}santa <name1> <name2> ... to create a secret santa group.`;
@@ -34,7 +35,9 @@ export class SecretSanta implements Command {
   }
 
   hasPermissionToRun(parsedUserCommand: CommandContext): boolean {
-    return parsedUserCommand.originalMessage.author.username === 'nish';
+    return !!parsedUserCommand.originalMessage.member?.roles.cache.find(
+      (r) => r.name === 'admin',
+    );
   }
 
   private async createPairs(): Promise<Map<string, string>> {

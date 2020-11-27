@@ -1,5 +1,5 @@
 import Discord, { Message } from 'discord.js';
-import { BotConfig, config } from './config/config';
+import { BotConfig, config } from './config';
 import { CommandHandler } from './utilities/command-handler';
 import { logger } from './utilities/logger';
 

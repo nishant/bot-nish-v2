@@ -39,18 +39,21 @@ export class HelpCommand implements Command {
     }
     if (allowedCommands.includes(matchedCommand)) {
       await commandContext.originalMessage.reply(
-        this.buildHelpMessageForCommand(matchedCommand, commandContext),
+        HelpCommand.buildHelpMessageForCommand(matchedCommand, commandContext),
       );
     }
   }
 
-  private buildHelpMessageForCommand(
+  private static buildHelpMessageForCommand(
     command: Command,
     context: CommandContext,
   ): string {
-    return `${command.getHelpMessage(
-      context.commandPrefix,
-    )}\nCommand aliases: ${command.commandNames.join(', ')}`;
+    const aliases = command.commandNames.join(', ');
+
+    const aliasText =
+      command.commandNames.length > 1 ? `\n(command aliases: ${aliases})` : '';
+
+    return `${command.getHelpMessage(context.commandPrefix)}${aliasText}`;
   }
 
   hasPermissionToRun(commandContext: CommandContext): boolean {

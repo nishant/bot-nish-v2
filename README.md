@@ -29,3 +29,8 @@ Note that changes to this file should not be committed to the repository, `confi
 | `npm run format` | Fixes most lint errors using Prettier. |
 | `npm run test`   | Run all tests.                         |
 
+
+## To Do
+
+* update play command to accept %p
+* update queue command to accept %q

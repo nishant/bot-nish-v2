@@ -1,5 +1,5 @@
 import { CommandContext } from '../models/command-context';
-import { Helpers } from '../utilities/helpers';
+import * as Helpers from '../utilities/helpers';
 import { Command } from './command';
 
 export class DiceRoll implements Command {

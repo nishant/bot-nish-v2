@@ -6,6 +6,7 @@ import { GreetCommand } from '../commands/greet';
 import { HelpCommand } from '../commands/help';
 import { PlayCommand } from '../commands/play';
 import { QueueCommand } from '../commands/queue';
+import { RngCommand } from '../commands/rng';
 import { SecretSanta } from '../commands/secret-santa';
 import { CommandContext } from '../models/command-context';
 import { logger } from './logger';
@@ -26,6 +27,7 @@ export class CommandHandler {
       DiceRoll,
       PlayCommand,
       QueueCommand,
+      RngCommand,
     ];
 
     this.commands = commandClasses.map((CommandClass) => new CommandClass());

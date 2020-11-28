@@ -1,7 +1,7 @@
 import { SANTA_ROLE_ID } from '../config';
 import { CommandContext } from '../models/command-context';
 import { DataHandler } from '../utilities/data-handler';
-import { Helpers } from '../utilities/helpers';
+import * as Helpers from '../utilities/helpers';
 import { Command } from './command';
 
 export class SecretSanta implements Command {
@@ -22,11 +22,6 @@ export class SecretSanta implements Command {
     await parsedUserCommand.originalMessage.channel.send(message);
 
     pairs.forEach(async (value, key) => {
-      // logger.info(key, DataHandler.getUsernameById(value));
-      // await DataHandler.sendMessageToUser(
-      //   key,
-      //   await DataHandler.getUsernameById(value),
-      // );
       await DataHandler.sendMessageToUser(
         key,
         await DataHandler.getUsernameById(value),

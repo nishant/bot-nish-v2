@@ -19,7 +19,10 @@ export class SecretSanta implements Command {
     const pairs = await this.createPairs();
     const message = `<@&${SecretSanta.ROLE_ID}>, Check your PMs for your secret santa assignment! 🎅`;
 
-    await parsedUserCommand.originalMessage.channel.send(message);
+    await DataHandler.sendMessageToChannel(
+      parsedUserCommand.originalMessage.channel,
+      message,
+    );
 
     pairs.forEach(async (value, key) => {
       await DataHandler.sendMessageToUser(

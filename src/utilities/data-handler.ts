@@ -1,4 +1,12 @@
-import { Collection, Guild, GuildMember, Snowflake } from 'discord.js';
+import {
+  Collection,
+  DMChannel,
+  Guild,
+  GuildMember,
+  NewsChannel,
+  Snowflake,
+  TextChannel,
+} from 'discord.js';
 import { client } from '../server';
 import { logger } from './logger';
 
@@ -60,6 +68,13 @@ export class DataHandler {
         messageContent,
       );
     }
+  }
+
+  public static async sendMessageToChannel(
+    channel: TextChannel | DMChannel | NewsChannel,
+    messageContent: string,
+  ): Promise<void> {
+    await channel.send(messageContent);
   }
 
   public static async getUsernameById(userId: string) {

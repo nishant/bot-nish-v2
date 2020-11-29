@@ -3,6 +3,7 @@ import {
   DMChannel,
   Guild,
   GuildMember,
+  MessageEmbed,
   NewsChannel,
   Snowflake,
   TextChannel,
@@ -88,5 +89,12 @@ export class DataHandler {
     roleName: string,
   ): Promise<boolean> {
     return !!member?.roles.cache.find((role) => role.name === roleName);
+  }
+
+  public static async sendEmbedToChannel(
+    channel: TextChannel | DMChannel | NewsChannel,
+    embed: MessageEmbed,
+  ): Promise<void> {
+    await channel.send(embed);
   }
 }

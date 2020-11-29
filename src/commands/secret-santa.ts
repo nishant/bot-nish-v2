@@ -7,6 +7,8 @@ import { Command } from './command';
 export class SecretSanta implements Command {
   commandNames = ['santa', 'secretsanta'];
 
+  readonly description = 'Creates secret santa assignments';
+
   private static readonly ROLE_ID = SANTA_ROLE_ID;
 
   getHelpMessage(commandPrefix: string): string {
@@ -19,7 +21,10 @@ export class SecretSanta implements Command {
     const pairs = await this.createPairs();
     const message = `<@&${SecretSanta.ROLE_ID}>, Check your PMs for your secret santa assignment! 🎅`;
 
-    await parsedUserCommand.originalMessage.channel.send(message);
+    await DataHandler.sendMessageToChannel(
+      parsedUserCommand.originalMessage.channel,
+      message,
+    );
 
     pairs.forEach(async (value, key) => {
       await DataHandler.sendMessageToUser(

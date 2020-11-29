@@ -7,6 +7,7 @@ export interface Command {
    * The first name in the list is the primary command name.
    */
   readonly commandNames: string[];
+  readonly description: string;
 
   /** Usage documentation. */
   getHelpMessage(commandPrefix: string): string;

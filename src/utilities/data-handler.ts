@@ -1,4 +1,13 @@
-import { Collection, Guild, GuildMember, Snowflake } from 'discord.js';
+import {
+  Collection,
+  DMChannel,
+  Guild,
+  GuildMember,
+  MessageEmbed,
+  NewsChannel,
+  Snowflake,
+  TextChannel,
+} from 'discord.js';
 import { client } from '../server';
 import { logger } from './logger';
 
@@ -62,6 +71,13 @@ export class DataHandler {
     }
   }
 
+  public static async sendMessageToChannel(
+    channel: TextChannel | DMChannel | NewsChannel,
+    messageContent: string,
+  ): Promise<void> {
+    await channel.send(messageContent);
+  }
+
   public static async getUsernameById(userId: string) {
     const user = this.users.get(userId)!;
     if (user !== undefined) return user.displayName;
@@ -73,5 +89,12 @@ export class DataHandler {
     roleName: string,
   ): Promise<boolean> {
     return !!member?.roles.cache.find((role) => role.name === roleName);
+  }
+
+  public static async sendEmbedToChannel(
+    channel: TextChannel | DMChannel | NewsChannel,
+    embed: MessageEmbed,
+  ): Promise<void> {
+    await channel.send(embed);
   }
 }

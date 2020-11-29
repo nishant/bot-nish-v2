@@ -1,8 +1,12 @@
+import { MessageEmbed } from 'discord.js';
 import { CommandContext } from '../models/command-context';
+import { DataHandler } from '../utilities/data-handler';
 import { Command } from './command';
 
 export class HelpCommand implements Command {
   readonly commandNames = ['help', 'hlep'];
+
+  readonly description = 'Displays available commands';
 
   private commands: Command[];
 
@@ -16,15 +20,13 @@ export class HelpCommand implements Command {
     );
 
     if (commandContext.args.length === 0) {
-      // No command specified, give the user a list of all commands they can use.
-      const commandNames = allowedCommands.map(
-        (command) => command.commandNames[0],
+      const embed = HelpCommand.createEmbed(allowedCommands);
+
+      await DataHandler.sendEmbedToChannel(
+        commandContext.originalMessage.channel,
+        embed,
       );
-      await commandContext.originalMessage.reply(
-        `here is a list of commands you can run: ${commandNames.join(
-          ', ',
-        )}. Try !help ${commandNames[0]} to learn more about one of them.`,
-      );
+
       return;
     }
 
@@ -33,7 +35,7 @@ export class HelpCommand implements Command {
     );
     if (!matchedCommand) {
       await commandContext.originalMessage.reply(
-        "I don't know about that command :(. Try %help to find all commands you can use.",
+        "I don't know about that command 😕 Use %help to see all of the commands you can use.",
       );
       throw Error('Unrecognized command');
     }
@@ -42,6 +44,14 @@ export class HelpCommand implements Command {
         HelpCommand.buildHelpMessageForCommand(matchedCommand, commandContext),
       );
     }
+  }
+
+  hasPermissionToRun(commandContext: CommandContext): boolean {
+    return true;
+  }
+
+  getHelpMessage(commandPrefix: string) {
+    return 'I think you already know how to use this command...';
   }
 
   private static buildHelpMessageForCommand(
@@ -56,11 +66,39 @@ export class HelpCommand implements Command {
     return `${command.getHelpMessage(context.commandPrefix)}${aliasText}`;
   }
 
-  hasPermissionToRun(commandContext: CommandContext): boolean {
-    return true;
-  }
+  private static createEmbed(allowedCommands: Command[]): MessageEmbed {
+    const embed = new MessageEmbed()
+      .setColor('#0398fc')
+      .setFooter(
+        'Created by Nishant Arora',
+        'https://cdn.discordapp.com/app-icons/774405608858058833/fb04cc9d98bd80d77d6a8791026221c7.png',
+      )
+      .setTimestamp()
+      .setAuthor(
+        'Bot Nish Commands',
+        'https://www.clker.com/cliparts/5/E/A/F/X/J/blue-info-icon.svg.hi.png',
+        'https://github.com/nishant/bot-nish-v2',
+      )
+      .setDescription(
+        'View the list below to see all available commands.\n' +
+          'Use %help <command> to learn more about  its usage.\n\u200b',
+      );
 
-  getHelpMessage(commandPrefix: string) {
-    return 'I think you already know how to use this command...';
+    allowedCommands.sort((a, b) => {
+      return a.commandNames[0].localeCompare(b.commandNames[0]);
+    });
+
+    const commandNames = allowedCommands.map(
+      (command) => command.commandNames[0],
+    );
+
+    allowedCommands.forEach((command, index) => {
+      let { description } = command;
+      if (index === allowedCommands.length - 1) description += '\n\u200b';
+
+      embed.addField(commandNames[index], description, false);
+    });
+
+    return embed;
   }
 }

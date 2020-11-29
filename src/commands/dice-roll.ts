@@ -5,6 +5,8 @@ import { Command } from './command';
 export class DiceRoll implements Command {
   readonly commandNames = ['diceroll'];
 
+  readonly description = 'Rolls a die';
+
   private dice = Array.from({ length: 6 }, (_, i) => i + 1);
 
   getHelpMessage(commandPrefix: string): string {

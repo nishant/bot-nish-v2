@@ -5,6 +5,8 @@ import { Command } from './command';
 export class RngCommand implements Command {
   commandNames = ['rng'];
 
+  readonly description = 'Generates a random number';
+
   static readonly RNG_SUCCESS_MSG = 'the number is ';
 
   static readonly NUM_ARGS_ERR_MSG = 'error: invalid number of arguments';

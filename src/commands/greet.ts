@@ -4,6 +4,8 @@ import { Command } from './command';
 export class GreetCommand implements Command {
   commandNames = ['greet', 'hello'];
 
+  readonly description = 'Says hello (test command)';
+
   getHelpMessage(commandPrefix: string): string {
     return `Use ${commandPrefix}greet to get a greeting.`;
   }

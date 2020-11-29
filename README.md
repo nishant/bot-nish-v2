@@ -34,3 +34,12 @@ Note that changes to this file should not be committed to the repository, `confi
 
 * update play command to accept %p
 * update queue command to accept %q
+* add lodash - remove helper shuffle
+* uptime command
+* user server stats command
+* anime airing cmd
+* mal search
+* weather cmd
+* stock cmd
+* password gen cmd
+

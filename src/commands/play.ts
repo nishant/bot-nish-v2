@@ -5,6 +5,8 @@ import { Command } from './command';
 export class PlayCommand implements Command {
   commandNames = ['play', 'paly'];
 
+  readonly description = 'Plays all tracks in the music player queue';
+
   public getHelpMessage = (commandPrefix: string): string => {
     return `Use ${commandPrefix}play to stream audio from YouTube.`;
   };

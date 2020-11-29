@@ -7,6 +7,8 @@ import { Command } from './command';
 export class SecretSanta implements Command {
   commandNames = ['santa', 'secretsanta'];
 
+  readonly description = 'Creates secret santa assignments';
+
   private static readonly ROLE_ID = SANTA_ROLE_ID;
 
   getHelpMessage(commandPrefix: string): string {

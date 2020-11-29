@@ -5,6 +5,8 @@ import { Command } from './command';
 export class CoinFlip implements Command {
   readonly commandNames = ['coinflip'];
 
+  readonly description = 'Flips a coin';
+
   private coin = ['heads', 'tails'];
 
   getHelpMessage(commandPrefix: string): string {

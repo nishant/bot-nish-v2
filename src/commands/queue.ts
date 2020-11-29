@@ -9,6 +9,8 @@ import { Command } from './command';
 export class QueueCommand implements Command {
   commandNames = ['queue', 'qeuue', 'queeu'];
 
+  readonly description = 'Queue audio tracks to be played from YouTube';
+
   public getHelpMessage = (commandPrefix: string): string => {
     return `Use ${commandPrefix}queue to queue audio from YouTube.`;
   };

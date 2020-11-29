@@ -4,6 +4,7 @@ import { Command } from '../commands/command';
 import { DiceRoll } from '../commands/dice-roll';
 import { GreetCommand } from '../commands/greet';
 import { HelpCommand } from '../commands/help';
+import { PasswordCommand } from '../commands/password';
 import { PlayCommand } from '../commands/play';
 import { QueueCommand } from '../commands/queue';
 import { RngCommand } from '../commands/rng';
@@ -28,6 +29,7 @@ export class CommandHandler {
       PlayCommand,
       QueueCommand,
       RngCommand,
+      PasswordCommand,
     ];
 
     this.commands = commandClasses.map((CommandClass) => new CommandClass());

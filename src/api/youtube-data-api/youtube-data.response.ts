@@ -9,6 +9,5 @@ export interface YoutubeResponse {
     totalResults: number;
     resultsPerPage: number;
   };
-
   items: YoutubeResponseSearchItem[];
 }

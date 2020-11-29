@@ -1,7 +1,7 @@
 import {
   getPlayableUrl,
   search,
-} from '../api/youtube-data-api/youtube-data-api-handler';
+} from '../api/youtube-data-api/youtube-data.handler';
 import { CommandContext } from '../models/command-context';
 import { MusicPlayer } from '../utilities/music-player/music-player';
 import { Command } from './command';

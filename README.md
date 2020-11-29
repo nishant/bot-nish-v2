@@ -39,7 +39,6 @@ Note that changes to this file should not be committed to the repository, `confi
 * user server stats command
 * anime airing cmd
 * mal search
-* weather cmd
+* weather cmd - WIP
 * stock cmd
-* password gen cmd
-
+* remove ROLEID for just SANTA ROLEID 

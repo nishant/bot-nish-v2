@@ -3,6 +3,8 @@ import 'dotenv/config';
 /* secrets */
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN ?? '<NO TOKEN>';
 export const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY ?? '<NO KEY>';
+export const OPEN_WEATHER_MAP_API_KEY =
+  process.env.OPEN_WEATHER_MAP_API_KEY ?? '<NO KEY>';
 
 /* non-secrets */
 export const SANTA_ROLE_ID = '778849334182936596';

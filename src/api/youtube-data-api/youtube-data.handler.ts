@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { YOUTUBE_API_KEY } from '../../config';
 import { logger } from '../../utilities/logger';
-import { YoutubeResponse } from './youtube-data-api-response';
+import { YoutubeResponse } from './youtube-data.response';
 
 const endpoint = 'https://www.googleapis.com/youtube/v3';
 const videoBaseUrl = 'https://www.youtube.com/watch?v=';

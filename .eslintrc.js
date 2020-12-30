@@ -44,6 +44,12 @@ module.exports = {
       },
     ],
     'no-unused-vars': 'warn',
+    'no-plusplus': [
+      'warn',
+      {
+        allowForLoopAfterthoughts: true,
+      },
+    ],
   },
   ignorePatterns: ['dist/**', 'coverage/**'],
 };

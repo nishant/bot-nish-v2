@@ -9,6 +9,7 @@ import { PlayCommand } from '../commands/play';
 import { QueueCommand } from '../commands/queue';
 import { RngCommand } from '../commands/rng';
 import { SecretSanta } from '../commands/secret-santa';
+import { WeatherCommand } from '../commands/weather';
 import { CommandContext } from '../models/command-context';
 import { logger } from './logger';
 import { reactor } from './reactor';
@@ -30,6 +31,7 @@ export class CommandHandler {
       QueueCommand,
       RngCommand,
       PasswordCommand,
+      WeatherCommand,
     ];
 
     this.commands = commandClasses.map((CommandClass) => new CommandClass());

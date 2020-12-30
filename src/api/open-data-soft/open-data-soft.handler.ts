@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { OPEN_WEATHER_MAP_API_KEY } from '../../config';
 import { logger } from '../../utilities/logger';
 import { OpenDataSoftReverseZipResponse } from './open-data-soft.response';
 
@@ -8,9 +7,6 @@ const dataset = 'us-zip-code-latitude-and-longitude';
 
 const requestClient = axios.create({
   baseURL: endpoint,
-  params: {
-    key: OPEN_WEATHER_MAP_API_KEY,
-  },
 });
 
 export const reverseZipSearch = async (
@@ -27,7 +23,7 @@ export const reverseZipSearch = async (
     );
     return body;
   } catch (e) {
-    logger.info('OpenDataSoft API Search Error!!!', `${e.message}`);
-    throw new Error('Youtube Search Error');
+    logger.info('OpenDataSoft API Search Error!', `${e.message}`);
+    throw new Error('OpenDataSoft Search Error');
   }
 };

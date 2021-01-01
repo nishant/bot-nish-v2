@@ -24,6 +24,7 @@ export class AnimeCommand implements Command {
     return `Use ${commandPrefix}anime <name> to get anime info.`;
   }
 
+  // eslint-disable-next-line no-unused-vars
   hasPermissionToRun(parsedUserCommand: CommandContext): boolean {
     return true;
   }
@@ -62,7 +63,6 @@ export class AnimeCommand implements Command {
       }
     } else {
       const animeName = parsedUserCommand.args.join(' ');
-      console.log(parsedUserCommand.args.join(' '));
       // eslint-disable-next-line camelcase,no-unused-vars
       const { results, last_page } = await animeSearch(animeName);
 
@@ -79,7 +79,7 @@ export class AnimeCommand implements Command {
       const topResult = results[0];
 
       if (topResult === null) {
-        parsedUserCommand.originalMessage.channel.send(
+        await parsedUserCommand.originalMessage.channel.send(
           `No anime found matching '${animeName}.`,
         );
         return Promise.resolve(undefined);
@@ -203,6 +203,7 @@ export class AnimeCommand implements Command {
     /* eslint-disable camelcase */
     const {
       url,
+      // eslint-disable-next-line no-unused-vars
       mal_id,
       airing,
       end_date,

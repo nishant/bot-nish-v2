@@ -8,6 +8,7 @@ export interface Command {
    */
   readonly commandNames: string[];
   readonly description: string;
+  readonly selectorData?: Map<number, any> | null;
 
   /** Usage documentation. */
   getHelpMessage(commandPrefix: string): string;

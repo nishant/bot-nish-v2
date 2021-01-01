@@ -1,4 +1,5 @@
 import { Message } from 'discord.js';
+import { AnimeCommand } from '../commands/anime';
 import { CoinFlip } from '../commands/coin-flip';
 import { Command } from '../commands/command';
 import { DiceRoll } from '../commands/dice-roll';
@@ -11,6 +12,7 @@ import { RngCommand } from '../commands/rng';
 import { SecretSanta } from '../commands/secret-santa';
 import { WeatherCommand } from '../commands/weather';
 import { CommandContext } from '../models/command-context';
+import { DataHandler } from './data-handler';
 import { logger } from './logger';
 import { reactor } from './reactor';
 
@@ -32,6 +34,7 @@ export class CommandHandler {
       RngCommand,
       PasswordCommand,
       WeatherCommand,
+      AnimeCommand,
     ];
 
     this.commands = commandClasses.map((CommandClass) => new CommandClass());
@@ -53,7 +56,10 @@ export class CommandHandler {
     );
 
     if (!matchedCommand) {
-      await message.reply("I don't recognize that command. Try !help.");
+      await DataHandler.sendMessageToChannel(
+        message.channel,
+        `I don't recognize that command. Try ${this.prefix}help.`,
+      );
       await reactor.failure(message);
       // TODO: log here
     } else if (!allowedCommands.includes(matchedCommand)) {

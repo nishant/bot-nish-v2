@@ -93,7 +93,7 @@ export class AnimeCommand implements Command {
 
       await DataHandler.sendEmbedToChannel(
         parsedUserCommand.originalMessage.channel,
-        await this.createSelectorEmbed(selectorData, topResults),
+        await this.createSelectorEmbed(selectorData, topResults, animeName),
       );
     }
     return Promise.resolve(undefined);
@@ -102,10 +102,14 @@ export class AnimeCommand implements Command {
   private async createSelectorEmbed(
     selectorData: string[],
     topResults: JikanAnimeSearchResult[],
+    animeName: string,
   ): Promise<MessageEmbed> {
     const embed = new MessageEmbed();
     this.selectorData = await this.createPairs(topResults);
     embed.setTitle('Top Results\n\u200b');
+    embed.setURL(
+      encodeURI(`https://myanimelist.net/anime.php?q=${animeName}&cat=anime`),
+    );
     embed.setAuthor(`Use the -c <num> option to choose a result.\n\u200b`);
     selectorData.forEach((value) => embed.addField(value, '\n\u200b', false));
 
@@ -159,13 +163,15 @@ export class AnimeCommand implements Command {
           true,
         )
         .addField('\u200b', '\u200b', true)
+        // \u23af
+        .addField('\u200b', '⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯', false)
         .addField(
-          'Completed',
+          '\u200b\nCompleted',
           `${formatNumberStringWithCommas(stats.completed)}`,
           true,
         )
         .addField(
-          'Rewatched',
+          '\u200b\nRewatched',
           `${formatNumberStringWithCommas(stats.rewatched)}`,
           true,
         )

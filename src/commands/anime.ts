@@ -38,114 +38,96 @@ export class AnimeCommand implements Command {
     ) {
       const username = parsedUserCommand.args[1];
       const userData = await userSearch(username);
+
       await DataHandler.sendEmbedToChannel(
         parsedUserCommand.originalMessage.channel,
         AnimeCommand.createAnimeStatsEmbed(userData),
       );
       return Promise.resolve(undefined);
     }
+
     let selection: number;
-    if (
-      parsedUserCommand.args[0] === '-c' &&
-      /^\d$/.test(parsedUserCommand.args[1])
-    ) {
-      // eslint-disable-next-line radix
-      selection = parseInt(parsedUserCommand.args[1]);
-      if (this.selectorData?.get(selection) === undefined) {
+    const animeName = parsedUserCommand.args.join(' ');
+    // eslint-disable-next-line camelcase,no-unused-vars
+    const { results, last_page } = await animeSearch(animeName);
+
+    if (results === null || results.length === 0) {
+      await DataHandler.sendMessageToChannel(
+        parsedUserCommand.originalMessage.channel,
+        'No Results Found.',
+      );
+      return Promise.resolve(undefined);
+    }
+
+    // sort results
+    // const sorted = results.sort((a, b) => (a.members <= b.members ? 1 : -1));
+
+    const topResult = results[0];
+
+    if (topResult === null) {
+      await parsedUserCommand.originalMessage.channel.send(
+        `No anime found matching '${animeName}.`,
+      );
+      return Promise.resolve(undefined);
+    }
+
+    const topResults = results.slice(0, Math.min(5, results.length));
+
+    const selectorData = topResults.map(
+      (value, index) => `${index + 1}. ${value.title} (${value.type})`,
+    );
+
+    const sentEmbed = await DataHandler.sendEmbedToChannel(
+      parsedUserCommand.originalMessage.channel,
+      await this.createSelectorEmbed(selectorData, topResults, animeName),
+    );
+
+    reactor.selectorData = this.selectorData;
+    await reactor.addReactionMenu(sentEmbed);
+
+    const filter = (
+      reaction: { emoji: { name: string } },
+      user: { id: any },
+    ) => {
+      return (
+        allReactionEmojis.includes(reaction.emoji.name) &&
+        user.id === parsedUserCommand.originalMessage.author.id
+      );
+    };
+
+    const collector = sentEmbed.createReactionCollector(filter, {
+      time: 10000,
+    });
+
+    let hasChosen = false;
+    collector.on('collect', async (reaction, user) => {
+      if (hasChosen) return;
+
+      hasChosen = true;
+      console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+      selection = allReactionEmojis.indexOf(reaction.emoji.name) + 1;
+
+      if (
+        this.selectorData === null ||
+        this.selectorData?.get(selection) === undefined
+      ) {
         await DataHandler.sendMessageToChannel(
           parsedUserCommand.originalMessage.channel,
           'Invalid Selection.',
         );
       } else {
-        // await DataHandler.sendEmbedToChannel(
-        //   parsedUserCommand.originalMessage.channel,
-        //   AnimeCommand.createAnimeEmbed(this.selectorData.get(selection)),
-        // );
-        // this.selectorData = null;
-      }
-    } else {
-      const animeName = parsedUserCommand.args.join(' ');
-      // eslint-disable-next-line camelcase,no-unused-vars
-      const { results, last_page } = await animeSearch(animeName);
-
-      if (results === null || results.length === 0) {
-        await DataHandler.sendMessageToChannel(
+        await DataHandler.sendEmbedToChannel(
           parsedUserCommand.originalMessage.channel,
-          'No Results Found.',
+          AnimeCommand.createAnimeEmbed(this.selectorData.get(selection)),
         );
-        return Promise.resolve(undefined);
+        this.selectorData = null;
       }
+    });
 
-      // const sorted = results.sort((a, b) => (a.members <= b.members ? 1 : -1));
+    collector.on('end', (collected) => {
+      console.log(`Collected ${collected.size} items`);
+    });
 
-      const topResult = results[0];
-
-      if (topResult === null) {
-        await parsedUserCommand.originalMessage.channel.send(
-          `No anime found matching '${animeName}.`,
-        );
-        return Promise.resolve(undefined);
-      }
-
-      const topResults = results.slice(0, Math.min(10, results.length));
-
-      const selectorData = topResults.map(
-        (value, index) => `${index + 1}. ${value.title} (${value.type})`,
-      );
-
-      const sentEmbed = await DataHandler.sendEmbedToChannel(
-        parsedUserCommand.originalMessage.channel,
-        await this.createSelectorEmbed(selectorData, topResults, animeName),
-      );
-
-      reactor.selectorData = this.selectorData;
-      await reactor.addReactionMenu(sentEmbed);
-
-      const filter = (
-        reaction: { emoji: { name: string } },
-        user: { id: any },
-      ) => {
-        return (
-          allReactionEmojis.includes(reaction.emoji.name) &&
-          user.id === parsedUserCommand.originalMessage.author.id
-        );
-      };
-
-      const collector = sentEmbed.createReactionCollector(filter, {
-        time: 10000,
-      });
-
-      let hasChosen = false;
-      collector.on('collect', async (reaction, user) => {
-        if (hasChosen) return;
-        hasChosen = true;
-        // await DataHandler.sendMessageToChannel(
-        //   parsedUserCommand.originalMessage.channel,
-        //   `Collected ${reaction.emoji.name} from ${user.tag}`,
-        // );
-
-        selection = allReactionEmojis.indexOf(reaction.emoji.name) + 1;
-        if (
-          this.selectorData === null ||
-          this.selectorData?.get(selection) === undefined
-        ) {
-          await DataHandler.sendMessageToChannel(
-            parsedUserCommand.originalMessage.channel,
-            'Invalid Selection.',
-          );
-        } else {
-          await DataHandler.sendEmbedToChannel(
-            parsedUserCommand.originalMessage.channel,
-            AnimeCommand.createAnimeEmbed(this.selectorData.get(selection)),
-          );
-          this.selectorData = null;
-        }
-      });
-
-      collector.on('end', (collected) => {
-        console.log(`Collected ${collected.size} items`);
-      });
-    }
     return Promise.resolve(undefined);
   }
 
@@ -160,7 +142,7 @@ export class AnimeCommand implements Command {
     embed.setURL(
       encodeURI(`https://myanimelist.net/anime.php?q=${animeName}&cat=anime`),
     );
-    embed.setAuthor(`Make a selection via reaction. (wait for all to load)`);
+    embed.setAuthor(`Make a selection via reaction.`);
     selectorData.forEach((value) => embed.addField(value, '\n\u200b', false));
 
     return embed;
@@ -237,13 +219,11 @@ export class AnimeCommand implements Command {
           true,
         )
         .addField('\u200b', '\u200b', true)
-
         .addField(
           'Watching',
           `${formatNumberStringWithCommas(stats.watching)}`,
           true,
         )
-
         .addField(
           'Plan to Watch',
           `${formatNumberStringWithCommas(stats.plan_to_watch)}\n\u200b`,

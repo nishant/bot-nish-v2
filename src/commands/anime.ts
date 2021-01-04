@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { animeSearch, userSearch } from '../api/jikan/jikan.handler';
 import {
   JikanAnimeSearchResult,
@@ -12,6 +12,7 @@ import {
   fisrtNChars,
   formatNumberStringWithCommas,
 } from '../utilities/helpers';
+import { logger } from '../utilities/logger';
 import { reactor } from '../utilities/reactor';
 import { Command } from './command';
 
@@ -36,17 +37,9 @@ export class AnimeCommand implements Command {
       parsedUserCommand.args[0] === 'stats' &&
       parsedUserCommand.args.length === 2
     ) {
-      const username = parsedUserCommand.args[1];
-      const userData = await userSearch(username);
-
-      await DataHandler.sendEmbedToChannel(
-        parsedUserCommand.originalMessage.channel,
-        AnimeCommand.createAnimeStatsEmbed(userData),
-      );
-      return Promise.resolve(undefined);
+      return AnimeCommand.getMALStats(parsedUserCommand);
     }
 
-    let selection: number;
     const animeName = parsedUserCommand.args.join(' ');
     // eslint-disable-next-line camelcase,no-unused-vars
     const { results, last_page } = await animeSearch(animeName);
@@ -74,7 +67,11 @@ export class AnimeCommand implements Command {
     const topResults = results.slice(0, Math.min(5, results.length));
 
     const selectorData = topResults.map(
-      (value, index) => `${index + 1}. ${value.title} (${value.type})`,
+      (value, index) =>
+        `${index + 1}. ${value.title} (${value.type}, ${fisrtNChars(
+          value.start_date,
+          10,
+        ).substring(0, 4)})`,
     );
 
     const sentEmbed = await DataHandler.sendEmbedToChannel(
@@ -82,6 +79,15 @@ export class AnimeCommand implements Command {
       await this.createSelectorEmbed(selectorData, topResults, animeName),
     );
 
+    await this.getSelectionFromReaction(sentEmbed, parsedUserCommand);
+
+    return Promise.resolve(undefined);
+  }
+
+  private async getSelectionFromReaction(
+    sentEmbed: Message,
+    parsedUserCommand: CommandContext,
+  ) {
     reactor.selectorData = this.selectorData;
     await reactor.addReactionMenu(sentEmbed);
 
@@ -96,15 +102,17 @@ export class AnimeCommand implements Command {
     };
 
     const collector = sentEmbed.createReactionCollector(filter, {
-      time: 10000,
+      time: 30000,
     });
 
+    let selection: number;
     let hasChosen = false;
+
     collector.on('collect', async (reaction, user) => {
       if (hasChosen) return;
 
       hasChosen = true;
-      console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+      logger.info(`Collected ${reaction.emoji.name} from ${user.tag}`);
       selection = allReactionEmojis.indexOf(reaction.emoji.name) + 1;
 
       if (
@@ -125,10 +133,37 @@ export class AnimeCommand implements Command {
     });
 
     collector.on('end', (collected) => {
-      console.log(`Collected ${collected.size} items`);
+      if (!hasChosen) {
+        DataHandler.sendMessageToChannel(
+          parsedUserCommand.originalMessage.channel,
+          'Selection timed out. Please re-run the command.',
+        );
+      }
+      logger.info(`Collected ${collected.size} items.`);
     });
+  }
 
+  private static async getMALStats(
+    parsedUserCommand: CommandContext,
+  ): Promise<void> {
+    const username = parsedUserCommand.args[1];
+    const userData = await userSearch(username);
+
+    await DataHandler.sendEmbedToChannel(
+      parsedUserCommand.originalMessage.channel,
+      AnimeCommand.createAnimeStatsEmbed(userData),
+    );
     return Promise.resolve(undefined);
+  }
+
+  private async createPairs(
+    results: JikanAnimeSearchResult[],
+  ): Promise<Map<number, JikanAnimeSearchResult>> {
+    const pairs = new Map<number, JikanAnimeSearchResult>();
+
+    results.forEach((value, index) => pairs.set(index + 1, value));
+
+    return pairs;
   }
 
   private async createSelectorEmbed(
@@ -138,22 +173,15 @@ export class AnimeCommand implements Command {
   ): Promise<MessageEmbed> {
     const embed = new MessageEmbed();
     this.selectorData = await this.createPairs(topResults);
+
     embed.setTitle('Top Results\n\u200b');
     embed.setURL(
       encodeURI(`https://myanimelist.net/anime.php?q=${animeName}&cat=anime`),
     );
-    embed.setAuthor(`Make a selection via reaction.`);
+
     selectorData.forEach((value) => embed.addField(value, '\n\u200b', false));
 
     return embed;
-  }
-
-  private async createPairs(
-    results: JikanAnimeSearchResult[],
-  ): Promise<Map<number, JikanAnimeSearchResult>> {
-    const pairs = new Map<number, JikanAnimeSearchResult>();
-    results.forEach((value, index) => pairs.set(index + 1, value));
-    return pairs;
   }
 
   private static createAnimeStatsEmbed(
@@ -195,8 +223,7 @@ export class AnimeCommand implements Command {
           true,
         )
         .addField('\u200b', '\u200b', true)
-        // \u23af
-        .addField('\u200b', '⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯', false)
+        .addField('\u200b', '⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯', false) // \u23af
         .addField(
           '\u200b\nCompleted',
           `${formatNumberStringWithCommas(stats.completed)}`,

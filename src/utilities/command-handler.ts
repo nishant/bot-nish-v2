@@ -76,6 +76,7 @@ export class CommandHandler {
       await matchedCommand
         .run(commandContext)
         .then(() => {
+          reactor.selectorData = matchedCommand.selectorData;
           reactor.success(message);
         })
         .catch((reason: Error) => {

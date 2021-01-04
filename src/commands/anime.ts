@@ -7,10 +7,12 @@ import {
 import { CommandContext } from '../models/command-context';
 import { DataHandler } from '../utilities/data-handler';
 import {
+  allReactionEmojis,
   dateFormatToReadable,
   fisrtNChars,
   formatNumberStringWithCommas,
 } from '../utilities/helpers';
+import { reactor } from '../utilities/reactor';
 import { Command } from './command';
 
 export class AnimeCommand implements Command {
@@ -55,11 +57,11 @@ export class AnimeCommand implements Command {
           'Invalid Selection.',
         );
       } else {
-        await DataHandler.sendEmbedToChannel(
-          parsedUserCommand.originalMessage.channel,
-          AnimeCommand.createAnimeEmbed(this.selectorData.get(selection)),
-        );
-        this.selectorData = null;
+        // await DataHandler.sendEmbedToChannel(
+        //   parsedUserCommand.originalMessage.channel,
+        //   AnimeCommand.createAnimeEmbed(this.selectorData.get(selection)),
+        // );
+        // this.selectorData = null;
       }
     } else {
       const animeName = parsedUserCommand.args.join(' ');
@@ -91,10 +93,58 @@ export class AnimeCommand implements Command {
         (value, index) => `${index + 1}. ${value.title} (${value.type})`,
       );
 
-      await DataHandler.sendEmbedToChannel(
+      const sentEmbed = await DataHandler.sendEmbedToChannel(
         parsedUserCommand.originalMessage.channel,
         await this.createSelectorEmbed(selectorData, topResults, animeName),
       );
+
+      reactor.selectorData = this.selectorData;
+      await reactor.addReactionMenu(sentEmbed);
+
+      const filter = (
+        reaction: { emoji: { name: string } },
+        user: { id: any },
+      ) => {
+        return (
+          allReactionEmojis.includes(reaction.emoji.name) &&
+          user.id === parsedUserCommand.originalMessage.author.id
+        );
+      };
+
+      const collector = sentEmbed.createReactionCollector(filter, {
+        time: 10000,
+      });
+
+      let hasChosen = false;
+      collector.on('collect', async (reaction, user) => {
+        if (hasChosen) return;
+        hasChosen = true;
+        // await DataHandler.sendMessageToChannel(
+        //   parsedUserCommand.originalMessage.channel,
+        //   `Collected ${reaction.emoji.name} from ${user.tag}`,
+        // );
+
+        selection = allReactionEmojis.indexOf(reaction.emoji.name) + 1;
+        if (
+          this.selectorData === null ||
+          this.selectorData?.get(selection) === undefined
+        ) {
+          await DataHandler.sendMessageToChannel(
+            parsedUserCommand.originalMessage.channel,
+            'Invalid Selection.',
+          );
+        } else {
+          await DataHandler.sendEmbedToChannel(
+            parsedUserCommand.originalMessage.channel,
+            AnimeCommand.createAnimeEmbed(this.selectorData.get(selection)),
+          );
+          this.selectorData = null;
+        }
+      });
+
+      collector.on('end', (collected) => {
+        console.log(`Collected ${collected.size} items`);
+      });
     }
     return Promise.resolve(undefined);
   }
@@ -110,7 +160,7 @@ export class AnimeCommand implements Command {
     embed.setURL(
       encodeURI(`https://myanimelist.net/anime.php?q=${animeName}&cat=anime`),
     );
-    embed.setAuthor(`Use the -c <num> option to choose a result.\n\u200b`);
+    embed.setAuthor(`Make a selection via reaction. (wait for all to load)`);
     selectorData.forEach((value) => embed.addField(value, '\n\u200b', false));
 
     return embed;

@@ -3,6 +3,7 @@ import {
   DMChannel,
   Guild,
   GuildMember,
+  Message,
   MessageEmbed,
   NewsChannel,
   Snowflake,
@@ -96,7 +97,7 @@ export class DataHandler {
   public static async sendEmbedToChannel(
     channel: TextChannel | DMChannel | NewsChannel,
     embed: MessageEmbed,
-  ): Promise<void> {
-    await channel.send(embed);
+  ): Promise<Message> {
+    return channel.send(embed);
   }
 }

@@ -7,7 +7,6 @@ import {
 import { CommandContext } from '../models/command-context';
 import { DataHandler } from '../utilities/data-handler';
 import {
-  allReactionEmojis,
   dateFormatToReadable,
   fisrtNChars,
   formatNumberStringWithCommas,
@@ -20,6 +19,8 @@ export class AnimeCommand implements Command {
   readonly commandNames = ['anime', 'mal', 'ani'];
 
   readonly description = 'Gets anime information from MyAnimeList';
+
+  private readonly reactionEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣'];
 
   selectorData: Map<number, any> | null;
 
@@ -89,14 +90,14 @@ export class AnimeCommand implements Command {
     parsedUserCommand: CommandContext,
   ) {
     reactor.selectorData = this.selectorData;
-    await reactor.addReactionMenu(sentEmbed);
+    await reactor.addReactionMenu(sentEmbed, this.reactionEmojis);
 
     const filter = (
       reaction: { emoji: { name: string } },
       user: { id: any },
     ) => {
       return (
-        allReactionEmojis.includes(reaction.emoji.name) &&
+        this.reactionEmojis.includes(reaction.emoji.name) &&
         user.id === parsedUserCommand.originalMessage.author.id
       );
     };
@@ -113,7 +114,7 @@ export class AnimeCommand implements Command {
 
       hasChosen = true;
       logger.info(`Collected ${reaction.emoji.name} from ${user.tag}`);
-      selection = allReactionEmojis.indexOf(reaction.emoji.name) + 1;
+      selection = this.reactionEmojis.indexOf(reaction.emoji.name) + 1;
 
       if (
         this.selectorData === null ||

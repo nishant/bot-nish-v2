@@ -1,6 +1,5 @@
 import { Message } from 'discord.js';
 import { config } from '../config';
-import { allReactionEmojis } from './helpers';
 
 const ACK_REACTIONS = ['👍', '💚', '👌', '😃'];
 const EXPIRED_REACTIONS = ['⌛', '💤', '😴'];
@@ -42,7 +41,7 @@ export class Reactor {
     await message.react(getRandom(reactionType));
   }
 
-  public async addReactionMenu(message: Message) {
+  public async addReactionMenu(message: Message, reactionEmojis: string[]) {
     if (
       !this.enableReactions ||
       this.selectorData === null ||
@@ -51,20 +50,10 @@ export class Reactor {
       this.selectorData.size > 10
     )
       return;
+
     if (message.reactions.cache.size > 0) await message.reactions.removeAll();
 
-    const numButtons = this.selectorData.size;
-    const allButtons = allReactionEmojis;
-    const buttons: string[] = [];
-
-    for (let i = 0; i < numButtons; i++) {
-      buttons.push(allButtons[i]);
-      // eslint-disable-next-line no-await-in-loop
-      await message.react(allButtons[i]);
-    }
-
-    // await buttons.forEach((value) => message.react(value));
-    // await message.react(getRandom(reactionType));
+    reactionEmojis.forEach((emoji) => message.react(emoji));
   }
 }
 

@@ -11,6 +11,7 @@ import { QueueCommand } from '../commands/queue';
 import { RngCommand } from '../commands/rng';
 import { SecretSanta } from '../commands/secret-santa';
 import { WeatherCommand } from '../commands/weather';
+import { YugiohCommand } from '../commands/yugioh';
 import { CommandContext } from '../models/command-context';
 import { DataHandler } from './data-handler';
 import { logger } from './logger';
@@ -35,6 +36,7 @@ export class CommandHandler {
       PasswordCommand,
       WeatherCommand,
       AnimeCommand,
+      YugiohCommand,
     ];
 
     this.commands = commandClasses.map((CommandClass) => new CommandClass());

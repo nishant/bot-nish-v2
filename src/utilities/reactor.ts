@@ -53,7 +53,10 @@ export class Reactor {
 
     if (message.reactions.cache.size > 0) await message.reactions.removeAll();
 
-    reactionEmojis.forEach((emoji) => message.react(emoji));
+    for (let i = 0; i < this.selectorData.size; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      await message.react(reactionEmojis[i]);
+    }
   }
 }
 

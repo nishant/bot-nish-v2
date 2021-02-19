@@ -29,7 +29,7 @@ export class YugiohCommand implements Command {
     '🔟',
   ];
 
-  selectorData: Map<number, any> | null;
+  selectorData: Map<number, MonsterCard | SpellCard | TrapCard> | null;
 
   getHelpMessage(commandPrefix: string): string {
     return `Use ${commandPrefix}ygo <card_name> to get detailed card info.`;
@@ -138,7 +138,7 @@ export class YugiohCommand implements Command {
       } else {
         await DataHandler.sendEmbedToChannel(
           parsedUserCommand.originalMessage.channel,
-          YugiohCommand.createCardDataEmbed(this.selectorData.get(selection)),
+          YugiohCommand.createCardDataEmbed(this.selectorData.get(selection)!),
         );
         this.selectorData = null;
       }
@@ -160,7 +160,16 @@ export class YugiohCommand implements Command {
   ): MessageEmbed {
     /* eslint-disable camelcase */
 
-    const { id, name, desc, type, card_images, archetype, race } = cardData;
+    const {
+      id,
+      name,
+      desc,
+      type,
+      card_images,
+      archetype,
+      race,
+      has_effect,
+    } = cardData;
 
     const embed = new MessageEmbed();
 
@@ -185,6 +194,7 @@ export class YugiohCommand implements Command {
       } = cardData as MonsterCard;
 
       embed.addField('Card Type', `${type}\n\u200b`, true);
+      // embed.addField('Card Type', `${type}--- ${has_effect}\n\u200b`, true);
       embed.addField('Attribute', `${attribute}\n\u200b`, true);
       embed.addField('\u200b', `\u200b`, true);
 

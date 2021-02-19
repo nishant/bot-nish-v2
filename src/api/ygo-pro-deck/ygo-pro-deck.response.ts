@@ -5,6 +5,7 @@ export interface cardImage {
   // eslint-disable-next-line camelcase
   image_url_small: string;
 }
+
 export interface YGOCard {
   id: number;
   name: string;
@@ -12,6 +13,8 @@ export interface YGOCard {
   desc: string;
   race: string;
   archetype?: string;
+  // eslint-disable-next-line camelcase
+  has_effect: boolean;
   // eslint-disable-next-line camelcase
   card_images: cardImage[];
 }
